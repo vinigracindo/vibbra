@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn vibbra_ecommerce_api.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/vibbra/web/static
+      - media_volume:/home/vibbra/web/media
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+
+  nginx:
+    build: ./.docker/nginx
+    volumes:
+      - static_volume:/home/vibbra/web/static
+      - media_volume:/home/vibbra/web/media
+    ports:
+      - 8080:80
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
+  media_volume:
